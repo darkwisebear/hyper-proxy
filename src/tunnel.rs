@@ -2,7 +2,7 @@ use io_err;
 use std::io::{self, Cursor};
 use bytes::{BufMut, IntoBuf};
 use futures::{Async, Future, Poll};
-use hyper::header::Headers;
+use headers::Headers;
 use tokio_io::{AsyncRead, AsyncWrite};
 
 pub(crate) struct Tunnel<S> {

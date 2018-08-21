@@ -23,14 +23,14 @@ macro_rules! match_fn {
     }
 }
 
-impl<R: Read + Write> Read for ProxyStream<R> {
+impl<R: Read + Write + Send> Read for ProxyStream<R> {
     #[inline]
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         match_fn!(self, read, buf)
     }
 }
 
-impl<R: Read + Write> Write for ProxyStream<R> {
+impl<R: Read + Write + Send> Write for ProxyStream<R> {
     #[inline]
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         match_fn!(self, write, buf)
@@ -42,7 +42,7 @@ impl<R: Read + Write> Write for ProxyStream<R> {
     }
 }
 
-impl<R: AsyncRead + AsyncWrite> AsyncRead for ProxyStream<R> {
+impl<R: AsyncRead + AsyncWrite + Send> AsyncRead for ProxyStream<R> {
     unsafe fn prepare_uninitialized_buffer(&self, buf: &mut [u8]) -> bool {
         match *self {
             ProxyStream::Regular(ref s) => s.prepare_uninitialized_buffer(buf),
@@ -56,7 +56,7 @@ impl<R: AsyncRead + AsyncWrite> AsyncRead for ProxyStream<R> {
     }
 }
 
-impl<R: AsyncRead + AsyncWrite> AsyncWrite for ProxyStream<R> {
+impl<R: AsyncRead + AsyncWrite + Send> AsyncWrite for ProxyStream<R> {
     fn shutdown(&mut self) -> Poll<(), io::Error> {
         match_fn!(self, shutdown)
     }
